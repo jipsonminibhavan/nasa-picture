@@ -1,34 +1,43 @@
+//Constants
 const resultsNav = document.getElementById("resultsNav");
 const favoritesNav = document.getElementById("favoritesNav");
 const imagesContainer = document.querySelector(".images-container");
 const saveConfirmed = document.querySelector(".save-confirmed");
 const loader = document.querySelector(".loader");
+
 //NASA API
 const count = 10;
-const apiKey = "DEMO_KEY";
-const apiUrl = `https://api.nasa.gov/planetary/apod?api_key=${apiKey}&count=${count}`;
-//const apiUrl = `https://api.nasa.gov/neo/rest/v1/neo/browse?api_key=${apiKey}`;
+const NASA_API_KEY = "DEMO_KEY";
+const NASA_APOD_ENDPOINT = `https://api.nasa.gov/planetary/apod?api_key=${NASA_API_KEY}&count=${count}`;
+
 let resultsArray = [];
 let favorites = {};
 
-// Scroll To Top, Remove Loader, Show Content
-function showContent(page) {
-  window.scrollTo({ top: 0, behavior: "instant" });
-  loader.classList.add("hidden");
-  if (page === "results") {
-    resultsNav.classList.remove("hidden");
-    favoritesNav.classList.add("hidden");
-  } else {
-    resultsNav.classList.add("hidden");
-    favoritesNav.classList.remove("hidden");
-  }
+// Utility Functions
+function toggleLoader(isVisible) {
+  loader.classList[isVisible ? "remove" : "add"]("hidden");
 }
 
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: "instant" });
+}
+// Scroll To Top, Remove Loader, Show Content
+function showPageContent(page) {
+  const isResultPage = page === "results";
+  resultsNav.classList.toggle("hidden", !isResultPage);
+  favoritesNav.classList.toggle("hidden", isResultPage);
+  scrollToTop();
+  toggleLoader(false);
+}
+
+function getCurrentArray(page) {
+  return page === "results" ? resultsArray : Object.values(favorites);
+}
+
+function createCardElement() {}
 function createDOMNodes(page) {
-  const currentArray =
-    page === "results" ? resultsArray : Objects.values(favorites);
-  console.log("urrentArray ", page, currentArray);
-  currentArray.Array.forEach((result) => {
+  const currentArray = getCurrentArray(page);
+  currentArray.forEach((result) => {
     //Card Container
     const card = document.createElement("div");
     card.classList.add("card");
@@ -89,9 +98,10 @@ function updateDOM(page) {
     favorites = JSON.parse(localStorage.getItem("nasaFavorites"));
     console.log("favorites from localStorage", favorites);
   }
+  // Reset DOM, Create DOM Nodes, Show Content
   imagesContainer.textContent = "";
   createDOMNodes(page);
-  showContent(page);
+  showPageContent(page);
 }
 
 function saveFavorite(itemUrl) {
@@ -127,10 +137,10 @@ async function getNasaPictures() {
   // Show Loader
   loader.classList.remove("hidden");
   try {
-    const response = await fetch(apiUrl);
+    const response = await fetch(NASA_APOD_ENDPOINT);
     resultsArray = await response.json();
     console.log(resultsArray);
-    updateDOM("favorites");
+    updateDOM("results");
   } catch (error) {
     console.error("Fetching data failed", error);
   }
