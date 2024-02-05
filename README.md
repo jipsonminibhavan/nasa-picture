@@ -13,3 +13,5 @@ Bilder und zugehörige Daten (wie Titel, Datum, Erklärung) werden dynamisch in 
 Benutzer können Bilder zu ihren Favoriten hinzufügen oder daraus entfernen. Diese Auswahl wird im Local Storage gespeichert.
 Es gibt Funktionen zum Anzeigen und Verstecken des Ladebildschirms und zum Scrollen zur Seite.
 Funktionen wie createDOMNodes und updateDOM verwalten das Erstellen und Aktualisieren der auf der Seite angezeigten Elemente.
+
+Hier ist der Link zur App https://marvelous-starburst-cfb563.netlify.app/ .
